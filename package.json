@@ -1,0 +1,39 @@
+{
+  "name": "@convenux/design-system",
+  "version": "0.1.0",
+  "description": "One palette, two faces, three products. The Convenux design tokens and chrome.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Convenux/design-system.git"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./tokens.css": "./dist/tokens.css",
+    "./brand.css": "./dist/brand.css",
+    "./native": {
+      "types": "./dist/native.d.ts",
+      "default": "./dist/native.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node --experimental-strip-types --no-warnings src/build.ts",
+    "check": "node --experimental-strip-types --no-warnings src/build.ts --check",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "engines": {
+    "node": ">=22.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.3",
+    "typescript": "^5"
+  }
+}

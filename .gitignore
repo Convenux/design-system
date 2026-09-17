@@ -1,0 +1,5 @@
+node_modules/
+# Built by `npm run build`, and again by prepublishOnly. Nothing here is the source
+# of truth, so nothing here belongs in git — see src/tokens.ts.
+dist/
+*.tgz
