@@ -15,6 +15,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { report } from "./contrast.ts";
+import { providers } from "./providers.ts";
 import {
   chrome,
   color,
@@ -349,7 +350,113 @@ ${BANNER}
       transform: none;
     }
   }
+
+  /* ---- sign-in buttons -------------------------------------------------- */
+
+  /*
+   * Each wears its provider's own colours, mark and wording ("Continue with
+   * Google"), and all share one size, which Google asks for. Apple's rules set it:
+   * the title at 43% of the height and its logo at the full height of its artwork,
+   * hence 17 on 40 in a narrow column and 19 on 44 where "Continue with Facebook"
+   * fits. The system font, which Apple prefers; Google Sans is not ours to ship.
+   * Marks and colours: \`@convenux/design-system/providers\`.
+   */
+  .signin-list {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .signin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 40px;
+    padding-inline: 12px;
+    border-radius: var(--radius-field);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: filter 150ms var(--ease-snap);
+  }
+
+  .signin:hover {
+    filter: brightness(0.95);
+  }
+
+  /* The slot Apple's artwork defines, 31 x 44, at the button's full height. */
+  .signin__mark {
+    flex: none;
+    height: 100%;
+    aspect-ratio: 31 / 44;
+  }
+
+  @container (min-width: 18rem) {
+    .signin {
+      height: 44px;
+      font-size: 19px;
+    }
+  }
+
+${Object.entries(providers)
+  .map(
+    ([key, p]) => `  .signin--${key} {
+    background: ${p.background};
+    color: ${p.foreground};${p.border ? `\n    box-shadow: inset 0 0 0 1px ${p.border};` : ""}
+  }`,
+  )
+  .join("\n\n")}
 }
+`;
+}
+
+/* -- providers.js and providers.d.ts --------------------------------------- */
+
+/**
+ * The marks and colours as data, for the websites' button markup and the phone app's
+ * react-native-svg alike. `slot` places a 24-grid mark in the 31 x 44 slot at 20 of
+ * 44, Google's G at its specified 18 of 40; Apple's artwork is drawn on that grid.
+ */
+const SLOT = { viewBox: "0 0 31 44", glyph: "translate(5.5 12) scale(0.8333)" };
+
+function providersJs(): string {
+  return `/**
+ * ${BANNER.split("\n").join("\n * ")}
+ */
+
+export const providers = ${JSON.stringify(providers, null, 2)};
+
+export const slot = ${JSON.stringify(SLOT)};
+`;
+}
+
+function providersDts(): string {
+  return `/**
+ * ${BANNER.split("\n").join("\n * ")}
+ */
+
+export type Path = { d: string; fill?: string };
+export type Provider = {
+  name: string;
+  background: string;
+  foreground: string;
+  border?: string;
+  viewBox: string;
+  mark: Path[];
+};
+export type ProviderKey = ${Object.keys(providers)
+    .map((k) => `"${k}"`)
+    .join(" | ")};
+
+export declare const providers: Record<ProviderKey, Provider>;
+export declare const slot: { viewBox: string; glyph: string };
 `;
 }
 
@@ -580,6 +687,8 @@ const TARGETS: { file: string; body: string }[] = [
   { file: "brand.css", body: brand() },
   { file: "native.js", body: nativeJs() },
   { file: "native.d.ts", body: nativeDts() },
+  { file: "providers.js", body: providersJs() },
+  { file: "providers.d.ts", body: providersDts() },
 ];
 
 const { failures, rows } = audit();

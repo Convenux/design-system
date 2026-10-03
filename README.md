@@ -25,7 +25,26 @@ npm install @convenux/design-system
 `tokens.css` is a `@theme` block, so every token becomes a Tailwind utility:
 `bg-ink-3`, `text-fg-4`, `rounded-panel`, `font-mono`. `brand.css` is a small
 component layer for the parts tokens could not express — `.brand`, `.appbar`,
-`.navlink`, `.cta`.
+`.navlink`, `.cta`, and the sign-in buttons.
+
+**Sign-in buttons** are `.signin` plus `.signin--<provider>`, inside a
+`.signin-list`, with the mark from `providers` (the phone app draws the same data
+with react-native-svg):
+
+```tsx
+import { providers, slot } from "@convenux/design-system/providers";
+
+const p = providers.google;
+<a className="signin signin--google" href={start}>
+  <svg className="signin__mark" viewBox={slot.viewBox} aria-hidden>
+    {/* Apple's artwork is on the slot's own grid; the rest go in slot.glyph */}
+    <g transform={slot.glyph}>
+      {p.mark.map((m) => <path key={m.d} d={m.d} fill={m.fill ?? p.foreground} />)}
+    </g>
+  </svg>
+  Continue with {p.name}
+</a>
+```
 
 Each app still loads its own faces through `next/font`, into the two variables
 the theme fronts:

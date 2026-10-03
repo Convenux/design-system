@@ -1,6 +1,6 @@
 {
   "name": "@convenux/design-system",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "One palette, two faces, three products. The Convenux design tokens and chrome.",
   "license": "UNLICENSED",
   "repository": {
@@ -18,6 +18,10 @@
     "./native": {
       "types": "./dist/native.d.ts",
       "default": "./dist/native.js"
+    },
+    "./providers": {
+      "types": "./dist/providers.d.ts",
+      "default": "./dist/providers.js"
     },
     "./package.json": "./package.json"
   },
