@@ -1,13 +1,6 @@
 /**
- * Turns `tokens.ts` into the artefacts this package publishes, and refuses to write
- * any of them if the contrast contract is broken.
- *
- *   npm run build          # write dist/
- *   npm run build -- --check   # write nothing; fail if dist/ is stale
- *
- * Everything lands in `dist/`, which is what ships and what consumers import. The
- * generator used to write directly into three sibling checkouts; it does not know
- * about consumers any more, and they depend on the package instead.
+ * Writes `dist/` from `tokens.ts`, and writes nothing if the contrast contract breaks.
+ * `--check` writes nothing and fails if `dist/` is stale.
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -38,12 +31,7 @@ Change src/tokens.ts and run \`npm run build\`.`;
 
 /* -- tokens.css ------------------------------------------------------------ */
 
-/**
- * A Tailwind v4 `@theme` block.
- *
- * The font stacks front a `--font-*` variable that each app sets from `next/font`,
- * so the family names live here and the loading stays where Next can optimise it.
- */
+/** A Tailwind v4 `@theme` block. The `--font-*` variables come from each app's next/font. */
 function css(): string {
   const l = (s = "") => lines.push(s);
   const lines: string[] = [];
@@ -53,13 +41,7 @@ function css(): string {
   l("@theme {");
 
   l("  /* Type. `--font-manrope` and `--font-jetbrains-mono` come from next/font. */");
-  l("  /*");
-  l("   * Each var() carries its own fallback on purpose. A bare var() naming a");
-  l("   * property the app never set is invalid at computed-value time, and takes the");
-  l("   * whole declaration down with it rather than falling through to the next name");
-  l("   * in the list — so an app that loads no mono face would lose `font-mono`");
-  l("   * entirely instead of landing on the system monospace.");
-  l("   */");
+  l("  /* Each var() has its own fallback: an unset one would void the whole stack. */");
   l(
     `  --font-display: var(--font-manrope, ${font.display.stack[0]}), ${font.display.stack.join(", ")};`,
   );
@@ -154,15 +136,7 @@ function css(): string {
 
 /* -- brand.css ------------------------------------------------------------- */
 
-/**
- * The parts of the page that are the product rather than its content, as classes.
- *
- * These are components, which the rest of this system deliberately is not. They earn
- * the exception by being the thing tokens could not fix: two apps given the same
- * colours and the same faces still drew two different wordmarks, because a wordmark
- * is a composition, not a value. Anything that is genuinely one app's own stays in
- * that app's `globals.css`.
- */
+/** The base layer, and the chrome every site would otherwise rebuild, as classes. */
 function brand(): string {
   const m = chrome.mark;
   const size = (key: keyof typeof m) => {
@@ -258,11 +232,6 @@ ${BANNER}
 @layer components {
   /* ---- the lockup ------------------------------------------------------- */
 
-  /*
-   * The mark, a gap, the name. Always this order, always the sans face, always
-   * title case: "CONVENUX" in mono read as a field name on a site where the mono
-   * face means a machine produced the value.
-   */
   .brand {
     display: inline-flex;
     align-items: center;
@@ -300,13 +269,7 @@ ${BANNER}
     border-bottom: 1px solid var(--color-line-subtle);
   }
 
-  /*
-   * The blur lives on a pseudo-element, not on .appbar itself, and that is
-   * load-bearing rather than tidy: backdrop-filter establishes a containing block
-   * for every fixed-position descendant. With it on the bar, a menu sheet inside
-   * the header resolved a fixed, bottom-anchored sheet against the 60px bar and
-   * rendered above the top of the screen. Keep the filter on a childless layer.
-   */
+  /* On a childless layer: backdrop-filter makes a containing block for fixed descendants. */
   .appbar::before {
     content: "";
     position: absolute;
@@ -338,7 +301,6 @@ ${BANNER}
     }
   }
 
-  /* Marketing reads badly past ~1180; a table of editions wants all of 1440. */
   .appbar__inner {
     max-width: ${chrome.shell.reading}px;
   }
@@ -349,11 +311,7 @@ ${BANNER}
 
   /* ---- navigation ------------------------------------------------------- */
 
-  /*
-   * One nav link. The filled state only ever shows where a page can be current, so
-   * a marketing header of anchors renders as plain text and a product header of
-   * routes renders as pills, from the same class.
-   */
+  /* Filled only where a page is current: anchors read as text, routes as pills. */
   .navlink {
     display: inline-flex;
     align-items: center;
@@ -380,10 +338,6 @@ ${BANNER}
 
   /* ---- the primary call to action --------------------------------------- */
 
-  /*
-   * A pill, in all three products. The database already spoke in pills everywhere
-   * and the marketing site's 12px-radius button was the odd one out.
-   */
   .cta {
     display: inline-flex;
     align-items: center;
@@ -562,12 +516,8 @@ ${(["violet", "mint", "amber", "rose"] as const)
   /* ---- sign-in buttons -------------------------------------------------- */
 
   /*
-   * Each wears its provider's own colours, mark and wording ("Continue with
-   * Google"), and all share one size, which Google asks for. Apple's rules set it:
-   * the title at 43% of the height and its logo at the full height of its artwork,
-   * hence 17 on 40 in a narrow column and 19 on 44 where "Continue with Facebook"
-   * fits. The system font, which Apple prefers; Google Sans is not ours to ship.
-   * Marks and colours: \`@convenux/design-system/providers\`.
+   * Each in its provider's colours, mark and wording, all one size. Apple's rules set
+   * it: title at 43% of the height, logo at the full height of its artwork. System font.
    */
   .signin-list {
     container-type: inline-size;
@@ -627,11 +577,7 @@ ${Object.entries(providers)
 
 /* -- providers.js and providers.d.ts --------------------------------------- */
 
-/**
- * The marks and colours as data, for the websites' button markup and the phone app's
- * react-native-svg alike. `slot` places a 24-grid mark in the 31 x 44 slot at 20 of
- * 44, Google's G at its specified 18 of 40; Apple's artwork is drawn on that grid.
- */
+/** A 24-grid mark placed in Apple's 31 x 44 slot at 20 of 44 (Google's G at its specified 18 of 40). */
 const SLOT = { viewBox: "0 0 31 44", glyph: "translate(5.5 12) scale(0.8333)" };
 
 function providersJs(): string {
@@ -679,12 +625,8 @@ export declare const slot: { viewBox: string; glyph: string };
 /* -- native.js and native.d.ts --------------------------------------------- */
 
 /**
- * React Native has no cascade and no custom properties, so the same tokens ship as
- * plain values.
- *
- * Weights are separate families rather than a `fontWeight`: Android picks the wrong
- * file for anything but 400 and 700 when a family has more than two faces, and
- * Manrope ships five. `sans(600)` names the file directly and is right everywhere.
+ * React Native gets plain values. One family per weight rather than a `fontWeight`:
+ * Android picks the wrong file once a family ships more than two faces.
  */
 const MANROPE_FACES: Record<number, string> = {
   400: "Regular",
@@ -737,17 +679,7 @@ function nativeData(): Record<string, string> {
   };
 }
 
-/**
- * The runtime the phone app imports.
- *
- * Plain ESM rather than TypeScript: this ships inside a package, and a consumer's
- * bundler should not have to compile anything out of node_modules to use it. The
- * types travel alongside in native.d.ts.
- *
- * Weights are separate font families rather than a `fontWeight`, because Android
- * resolves `fontWeight` to the wrong file once a family ships more than two faces,
- * and Manrope ships five here.
- */
+/** The runtime the phone app imports: plain ESM, typed by native.d.ts. */
 function nativeJs(): string {
   const d = nativeData();
   return `/**
@@ -797,13 +729,7 @@ export const duration = {
 ${d.duration}
 };
 
-/**
- * A complete text style: a size off the scale, in a real face, at a real weight.
- *
- * Anything that renders words should come through here rather than setting
- * \`fontSize\` and \`fontFamily\` separately, which is how nine screens once ended up
- * in the system sans.
- */
+/** A size off the scale in a real face at a real weight; never set fontSize alone. */
 export function type(size, weight, role = "sans") {
   return { ...text[size], fontFamily: face[role][weight ?? Math.min(...Object.keys(face[role]).map(Number))] };
 }

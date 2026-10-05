@@ -1,11 +1,4 @@
-/**
- * WCAG 2.2 contrast, so the ramps are checked rather than believed.
- *
- * Both web apps carry hand-written comments about specific ratios — one of them
- * records a CTA label that sat at 4.26:1 until somebody noticed. Those comments are
- * true on the day they are written and silently stop being true the first time
- * anyone nudges a hex. This turns them into an assertion the build runs.
- */
+/** WCAG 2.2 contrast, so the ramps are checked rather than believed. */
 
 import type { Hex } from "./tokens.ts";
 

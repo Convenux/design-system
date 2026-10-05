@@ -1,14 +1,6 @@
 /**
- * The Convenux design system, in one file.
- *
- * Three products share this: the marketing site (convenux.com), the convention
- * database (db.convenux.com) and the phone app. They used to share nothing —
- * four type families, two violets a hair apart, two unrelated grey ramps and, in
- * the app, the unedited Expo starter palette. This is the reconciliation.
- *
- * Nothing here is generated from anything else, and nothing else here is edited by
- * hand: `build.ts` reads this file and writes the per-platform artefacts. Change a
- * value here, `npm run build`, and publish.
+ * The Convenux design tokens for convenux.com, db.convenux.com and the phone app. The
+ * only file anyone edits: `build.ts` writes the per-platform artefacts from it.
  *
  * Two rules the ramps depend on:
  *
@@ -23,13 +15,7 @@
 /** A hex colour, lowercase, six digits. The build asserts the shape. */
 export type Hex = `#${string}`;
 
-/**
- * Surfaces, darkest first.
- *
- * Taken from the marketing site's ink-950…750, which is the more neutral of the two
- * ramps that existed — the database's was a touch violet and read as a colour cast
- * once the two sat side by side in a browser.
- */
+/** Surfaces, darkest first. */
 export const surface = {
   /** The page. Nothing sits behind this. */
   "ink": "#08080a",
@@ -44,11 +30,8 @@ export const surface = {
 } as const satisfies Record<string, Hex>;
 
 /**
- * Hairlines and control boundaries.
- *
- * `line*` are decorative and exempt from 1.4.11 — they separate, they never carry
- * meaning on their own. `control` is not: it is the boundary of something you can
- * operate, it needs 3:1 against whatever it sits on, and the build checks it.
+ * Hairlines and control boundaries. `line*` are decorative (exempt from 1.4.11);
+ * `control` bounds something operable and needs 3:1 against what it sits on.
  */
 export const line = {
   /** Barely there. Section rules, footer divides. */
@@ -61,14 +44,7 @@ export const line = {
   "control": "#6e6e78",
 } as const satisfies Record<string, Hex>;
 
-/**
- * Text, brightest first.
- *
- * Six rungs, merged from the marketing site's four and the database's six. The
- * database needs the extra steps: a page there is label / value / source / date
- * stacked four deep, and four levels of emphasis is the minimum that reads as a
- * hierarchy rather than as noise.
- */
+/** Text, brightest first. */
 export const foreground = {
   /** Headings and anything a reader is meant to land on. */
   "fg": "#f4f4f7",
@@ -84,14 +60,7 @@ export const foreground = {
   "fg-6": "#6f6f80",
 } as const satisfies Record<string, Hex>;
 
-/**
- * Violet — the one brand colour, and the only colour either web app spends on
- * decoration.
- *
- * Four rungs, down from the marketing site's three and the database's six, which
- * between them held #6e5bff and #6f61ff: two violets one point apart, in two
- * products, on the same screen.
- */
+/** Violet: the one brand colour, and the only one spent on decoration. */
 export const brand = {
   /** Violet on a dark surface where it has to carry small text. */
   "violet-300": "#c9bfff",
@@ -105,26 +74,14 @@ export const brand = {
   "violet-tint": "#241f42",
   /** The border that goes with `violet-tint`. */
   "violet-edge": "#3a3170",
-  /**
-   * What goes on top of violet-500 and violet-600.
-   *
-   * The page ink, not the lighter one: #14121c drops to 4.26:1 on violet-600 and
-   * failed 1.4.3 for exactly as long as a pointer sat on the marketing site's CTA.
-   * The build re-checks this pair on every run so it cannot regress quietly.
-   */
+  /** What goes on top of violet-500 and violet-600. */
   "on-violet": "#08080a",
 } as const satisfies Record<string, Hex>;
 
 /**
- * The three signals.
- *
- * Named for the hue, not the meaning, and deliberately: the database maps them onto
- * trust (mint is confirmed, amber is doubted, rose is wrong) but the marketing site
- * spends mint on a tick in a feature list, and a token called `good` would have been
- * a lie there. Meaning belongs to the component — see `TONE_CLASS` in db-web.
- *
- * Each hue is a triple: the bright one carries text, `-tint` fills behind it, `-edge`
- * draws the border. Every bright/tint pair is contrast-checked by the build.
+ * The three signals, named for the hue, not the meaning: each app decides what mint,
+ * amber and rose mean. The bright one carries text, `-tint` fills behind it, `-edge`
+ * draws the border.
  */
 export const signal = {
   "mint-400": "#4fd69b",
@@ -135,11 +92,6 @@ export const signal = {
   "amber-tint": "#2a2113",
   "amber-edge": "#5a4526",
 
-  /*
-   * Rose is the database's, and the marketing site had no red at all — there is
-   * nothing on a landing page that a red is the honest colour for. It is here so
-   * that "cancelled" looks the same in the app as it does on the web.
-   */
   "rose-400": "#ff8a8a",
   "rose-tint": "#2a1416",
   "rose-edge": "#5c2a2e",
@@ -156,16 +108,9 @@ export const color = {
 export type ColorName = keyof typeof color;
 
 /**
- * Type.
- *
- * Two families where there were four. Manrope came from the marketing site and is
- * the brand voice; JetBrains Mono came from the database, where a mono face is
- * load-bearing rather than stylistic — it is what makes a date, an id or a field
- * name look like something a machine produced instead of something someone wrote.
- *
- * `display` and `sans` are the same family today. The token stays separate so that
- * headings can be re-pointed at a display face in one place, later, without a
- * find-and-replace across three repositories. That is the whole reason it exists.
+ * Manrope for anything a person reads; JetBrains Mono for anything a machine produced
+ * (dates, ids, counts). `display` is Manrope too, kept separate so headings can move to
+ * another face in one place.
  */
 export const font = {
   display: {
@@ -186,15 +131,7 @@ export const font = {
   },
 } as const;
 
-/**
- * Corner radii.
- *
- * Six steps, and a rule for each. The first cut of this had three, which was too few
- * to be usable: the marketing site stayed on Tailwind's defaults for every small
- * control because nothing here fitted, and the database grew forty arbitrary
- * `rounded-[13px]`-style values in the gaps. A scale nobody can land on is not a
- * scale.
- */
+/** Corner radii, one rule each. */
 export const radius = {
   /** A badge, a chip, the brand mark at chrome size. */
   xs: 8,
@@ -210,27 +147,11 @@ export const radius = {
   pill: 9999,
 } as const;
 
-/**
- * The chrome: the parts of a page that are the product rather than its content.
- *
- * Tokens alone could not make these match, and did not. Both web apps drew a header
- * and a wordmark from scratch and landed on two different brands — one set
- * "Convenux" in Manrope at -0.03em, the other "CONVENUX" in JetBrains Mono at
- * +0.2em, which is not a variation on a mark, it is a different mark. So the lockup
- * is specified here and emitted as CSS both apps import, rather than described in a
- * document and rebuilt twice.
- */
+/** The chrome: the parts of a page that are the product rather than its content. */
 export const chrome = {
   /**
-   * The brand lockup: the mark, a gap, the name.
-   *
-   * `md` is the one every header uses, in all three products. `lg` is for places the
-   * lockup is the subject rather than the furniture — a footer signature, an OG
-   * image — and `sm` is for a dense strip.
-   *
-   * The name is always title case in the sans face. It is a word, not a label: the
-   * uppercase mono treatment read as a field name, which on a site where mono means
-   * "a machine produced this" was actively saying the wrong thing about the brand.
+   * The lockup: mark, gap, name in title-case sans. `md` in every header, `lg` where the
+   * lockup is the subject (a footer, an OG image), `sm` in a dense strip.
    */
   mark: {
     sm: { icon: 22, iconRadius: 8, name: 14, gap: 8 },
@@ -245,11 +166,7 @@ export const chrome = {
   /** The sticky bar at the top of every product. One height, everywhere. */
   bar: { height: 60, opacity: 80, blur: 24 },
 
-  /**
-   * Page width. Two, because the difference is real and worth naming rather than
-   * leaving as a magic number in each repo: prose and marketing read badly past
-   * ~1180, and a table of editions needs every pixel of 1440.
-   */
+  /** Page width: prose reads badly past ~1180; a table of editions wants 1440. */
   shell: { reading: 1180, wide: 1440 },
 
   /**
@@ -259,16 +176,7 @@ export const chrome = {
   control: { sm: 36, md: 44 },
 } as const;
 
-/**
- * Motion.
- *
- * Easings only. Keyframes stay in each app because what rises on a landing page and
- * what rises in a table are not the same gesture, and pretending otherwise produced
- * two different `rise` animations sharing one name.
- *
- * Every app honours `prefers-reduced-motion`. Motion here is always additive: if it
- * never runs, nothing is lost.
- */
+/** Easings and durations; keyframes stay in each app. Motion is additive: nothing is lost without it. */
 export const motion = {
   /** Decelerating. For things arriving. */
   "ease-snap": "cubic-bezier(0.23, 1, 0.32, 1)",
@@ -281,12 +189,7 @@ export const motion = {
   },
 } as const;
 
-/**
- * The type scale.
- *
- * `size` is px and `leading` is unitless. The phone app consumes these directly;
- * the web apps get them as `--text-*` and the utilities Tailwind builds from them.
- */
+/** The type scale: `size` in px, `leading` unitless. */
 export const text = {
   "3xs": { size: 10, leading: 1.4 },
   "2xs": { size: 11, leading: 1.45 },
@@ -301,12 +204,7 @@ export const text = {
   "4xl": { size: 40, leading: 1.1 },
 } as const;
 
-/**
- * Spacing, in px, on a 4pt grid.
- *
- * The web apps already have Tailwind's identical scale and do not need this; it is
- * here for the phone app, where every gap was previously a number somebody typed.
- */
+/** Spacing in px, for the phone app (the web apps have Tailwind's identical scale). */
 export const space = {
   0.5: 2,
   1: 4,
@@ -325,12 +223,8 @@ export const space = {
 } as const;
 
 /**
- * Pairs the build refuses to let regress.
- *
- * Every one of these is a foreground actually used on that background somewhere in
- * the three apps. `min` is the WCAG 2.2 threshold that applies: 4.5 for body text,
- * 3 for large text (>=18.66px bold or >=24px) and for the boundary of a control
- * under 1.4.11.
+ * Pairs the build refuses to let regress: foregrounds used on those backgrounds. `min`
+ * is WCAG 2.2's: 4.5 for text, 3 for large text and for a control's boundary (1.4.11).
  */
 export const contrastContract: {
   fg: ColorName;
