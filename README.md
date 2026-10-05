@@ -5,8 +5,7 @@ convenux.com, the convention database and the phone app.
 
 ## Install
 
-Private package. Consumers need an npm token with read access to the
-`@convenux` scope — in Vercel and EAS as well as locally.
+Public on npm; no token needed.
 
 ```bash
 npm install @convenux/design-system
@@ -23,9 +22,21 @@ npm install @convenux/design-system
 ```
 
 `tokens.css` is a `@theme` block, so every token becomes a Tailwind utility:
-`bg-ink-3`, `text-fg-4`, `rounded-panel`, `font-mono`. `brand.css` is a small
-component layer for the parts tokens could not express — `.brand`, `.appbar`,
-`.navlink`, `.cta`, and the sign-in buttons.
+`bg-ink-3`, `text-fg-4`, `rounded-panel`, `font-mono`. `brand.css` is the base layer
+(page ground, focus ring, selection, reduced motion) and a small component layer for
+what tokens could not express:
+
+| class | what |
+|---|---|
+| `.brand`, `.brand--sm/md/lg` | the lockup |
+| `.appbar`, `.appbar--wide`, `.navlink` | the bar and its links |
+| `.cta`, `--sm`, `--secondary`, `--danger` | buttons |
+| `.field` | a text field, select or textarea |
+| `.label`, `.eyebrow` | a field's name; the line above a heading |
+| `.tag`, `--violet/mint/amber/rose` | a badge |
+| `.alert`, `.alert--ok` | an error or confirmation line |
+| `.skip-link` | the first focusable thing on a page |
+| `.signin-list`, `.signin`, `.signin--<provider>` | sign-in buttons |
 
 **Sign-in buttons** are `.signin` plus `.signin--<provider>`, inside a
 `.signin-list`, with the mark from `providers` (the phone app draws the same data
@@ -37,8 +48,7 @@ import { providers, slot } from "@convenux/design-system/providers";
 const p = providers.google;
 <a className="signin signin--google" href={start}>
   <svg className="signin__mark" viewBox={slot.viewBox} aria-hidden>
-    {/* Apple's artwork is on the slot's own grid; the rest go in slot.glyph */}
-    <g transform={slot.glyph}>
+    <g transform={p.glyph ?? undefined}>
       {p.mark.map((m) => <path key={m.d} d={m.d} fill={m.fill ?? p.foreground} />)}
     </g>
   </svg>

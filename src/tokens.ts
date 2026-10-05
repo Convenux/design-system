@@ -8,7 +8,7 @@
  *
  * Nothing here is generated from anything else, and nothing else here is edited by
  * hand: `build.ts` reads this file and writes the per-platform artefacts. Change a
- * value here, run `npm run tokens`, commit what changes in all three repositories.
+ * value here, `npm run build`, and publish.
  *
  * Two rules the ramps depend on:
  *
@@ -350,6 +350,9 @@ export const contrastContract: {
   { fg: "fg", bg: "ink-3", min: 4.5, note: "body copy on a card" },
   { fg: "fg-3", bg: "ink-3", min: 4.5, note: "secondary copy on a card" },
   { fg: "fg-4", bg: "ink-4", min: 4.5, note: "placeholder in a field" },
+  { fg: "fg", bg: "ink-4", min: 4.5, note: "a value in a field" },
+  { fg: "fg-3", bg: "ink-4", min: 4.5, note: "a neutral tag" },
+  { fg: "violet-400", bg: "ink-2", min: 4.5, note: "an eyebrow on a panel" },
 
   { fg: "on-violet", bg: "violet-500", min: 4.5, note: "label on a primary button" },
   { fg: "on-violet", bg: "violet-600", min: 4.5, note: "label on a primary button" },

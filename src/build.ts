@@ -184,6 +184,77 @@ function brand(): string {
 ${BANNER}
 */
 
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+
+  /* The offset lets the page paint between ring and control, so it reads on violet too. */
+  :focus-visible {
+    outline: 2px solid var(--color-violet-500);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline-color: Highlight;
+    }
+  }
+
+  ::selection {
+    background-color: var(--color-violet-500);
+    color: var(--color-on-violet);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary {
+    cursor: pointer;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-fg-4);
+    opacity: 1;
+  }
+
+  input[type="date"],
+  input[type="time"] {
+    color-scheme: dark;
+  }
+}
+
+/* iOS zooms into any focused field under 16px and stays zoomed. Unlayered to beat size utilities. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 @layer components {
   /* ---- the lockup ------------------------------------------------------- */
 
@@ -351,6 +422,143 @@ ${BANNER}
     }
   }
 
+  .cta--secondary {
+    background: transparent;
+    color: var(--color-fg);
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+  }
+
+  .cta--secondary:hover {
+    background: var(--color-ink-3);
+  }
+
+  .cta--danger {
+    background: var(--color-rose-tint);
+    color: var(--color-rose-400);
+    box-shadow: inset 0 0 0 1px var(--color-rose-edge);
+  }
+
+  .cta--danger:hover {
+    background: var(--color-rose-tint);
+    filter: brightness(1.25);
+  }
+
+  .cta:disabled,
+  .cta[aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* ---- text ------------------------------------------------------------- */
+
+  /* A field's name, a column head: mono, because a machine named it. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-fg-5);
+  }
+
+  /* The small line above a page's heading. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-violet-400);
+  }
+
+  /* ---- fields ----------------------------------------------------------- */
+
+  /* Keeps the page's focus ring: a border change alone is too faint to find a field by. */
+  .field {
+    width: 100%;
+    min-height: ${chrome.control.md}px;
+    padding: 12px 16px;
+    border: 1px solid var(--color-control);
+    border-radius: var(--radius-field);
+    background: var(--color-ink-4);
+    color: var(--color-fg);
+    font-size: 15px;
+    font-weight: 600;
+    transition: border-color 150ms var(--ease-snap);
+  }
+
+  .field:focus {
+    border-color: var(--color-violet-500);
+  }
+
+  .field:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ---- tags and notices ------------------------------------------------- */
+
+  /* What a tone means belongs to each app; the pairs are the contrast contract's. */
+  .tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink-4);
+    color: var(--color-fg-3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+${(["violet", "mint", "amber", "rose"] as const)
+  .map(
+    (hue) => `  .tag--${hue} {
+    background: var(--color-${hue}-tint);
+    color: var(--color-${hue}-${hue === "violet" ? 300 : 400});
+    box-shadow: inset 0 0 0 1px var(--color-${hue}-edge);
+  }`,
+  )
+  .join("\n\n")}
+
+  .alert {
+    padding: 12px 16px;
+    border: 1px solid var(--color-rose-edge);
+    border-radius: var(--radius-sm);
+    background: var(--color-rose-tint);
+    color: var(--color-rose-400);
+    font-size: 14px;
+  }
+
+  .alert--ok {
+    border-color: var(--color-mint-edge);
+    background: var(--color-mint-tint);
+    color: var(--color-mint-400);
+  }
+
+  /* ---- skip link -------------------------------------------------------- */
+
+  .skip-link {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 60;
+    padding: 10px 16px;
+    border-radius: var(--radius-pill);
+    background: var(--color-violet-500);
+    color: var(--color-on-violet);
+    font-weight: 800;
+    font-size: 14px;
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
   /* ---- sign-in buttons -------------------------------------------------- */
 
   /*
@@ -431,7 +639,13 @@ function providersJs(): string {
  * ${BANNER.split("\n").join("\n * ")}
  */
 
-export const providers = ${JSON.stringify(providers, null, 2)};
+export const providers = ${JSON.stringify(
+    Object.fromEntries(
+      Object.entries(providers).map(([key, p]) => [key, { ...p, glyph: key === "apple" ? null : SLOT.glyph }]),
+    ),
+    null,
+    2,
+  )};
 
 export const slot = ${JSON.stringify(SLOT)};
 `;
@@ -450,6 +664,8 @@ export type Provider = {
   border?: string;
   viewBox: string;
   mark: Path[];
+  /** The transform that places the mark in \`slot.viewBox\`; null for Apple, drawn on that grid. */
+  glyph: string | null;
 };
 export type ProviderKey = ${Object.keys(providers)
     .map((k) => `"${k}"`)
@@ -588,8 +804,8 @@ ${d.duration}
  * \`fontSize\` and \`fontFamily\` separately, which is how nine screens once ended up
  * in the system sans.
  */
-export function type(size, weight = 400, role = "sans") {
-  return { ...text[size], fontFamily: face[role][weight] };
+export function type(size, weight, role = "sans") {
+  return { ...text[size], fontFamily: face[role][weight ?? Math.min(...Object.keys(face[role]).map(Number))] };
 }
 `;
 }
@@ -638,6 +854,7 @@ export declare const chrome: {
 ${d.markSizes}
   };
   markRing: string;
+  /** In em: multiply by the font size for React Native's letterSpacing. */
   nameTracking: number;
   barHeight: number;
   control: { sm: number; md: number };

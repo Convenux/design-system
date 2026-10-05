@@ -1,6 +1,6 @@
 {
   "name": "@convenux/design-system",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "One palette, two faces, three products. The Convenux design tokens and chrome.",
   "license": "UNLICENSED",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/Convenux/design-system.git"
   },
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": ["*.css"],
   "files": [
     "dist"
   ],
